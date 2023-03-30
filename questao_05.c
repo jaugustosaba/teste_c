@@ -3,65 +3,49 @@
 
 #define LINHAS  3
 #define COLUNAS 5
+#define COUNT   5
 
-int **cria_slot(int **slot)
-{
-              int col;
-    int line;
+
+int **cria_slot() {
+    int** slot = malloc (sizeof(int *) * LINHAS);
+    for (int i=0; i < LINHAS; i++)
+        slot[i] = malloc (sizeof (int) * COLUNAS);
   
-    line = 0;
-         slot = malloc (sizeof(int *) * 3);
-    while (line < 3)
-        slot[line++] = malloc (sizeof (int));
-    line = 0;
-    col = 0;
-        while (line < 3)
-                               {
-                printf("Insira os valores da linha %d:\n", (line + 1));
-        while (col < 5)
-        {
-scanf("%d", &slot[line][col]);
-col++;
-          
- col = 0;
-        line++;
-  }
-    return (slot);
+    for (int i=0; i < LINHAS; i++) {
+        printf("Insira os valores da linha %d:\n", (i + 1));
+        for (int j=0; j < COLUNAS; j++)
+            scanf("%d", &slot[i][j]);
+    }
+
+    return slot;
 }
-  
-int main (void)
-{
-    int premio[LINHAS][COLUNAS] =  {{1,0,0,0,1}, {0,1,0,1,0}, {0,0,1,0,0}};
-    int    **slot = 0;
-    int lines = 0;
-    int cols = 0;
-    slot = cria_slot(slot);
-    int comp = slot[0][0];
-    int count_prize = 0;
-    while (lines < 3 && count_prize != 5)
-    {
-           while (cols < 5)
-           {
-        if (comp == slot[lines][cols] && premio[lines][cols])
-        { 
-        count_prize++;
-    }
-    cols++; }
-    cols = 0;
-     lines ++;
-    if (lines == 3 && count_prize != 5)
-    {
-    lines = 0;
-    while (lines < 3)
-        free (slot[lines++]);
-    free(slot);
-    lines = 0;
-                cols = 0;
-    count_prize = 0;
-    slot = cria_slot(slot);
-    comp = slot[0][0];
-      }
-    }
-                   printf ("Gahnou!\n");
-    return (0);
+
+
+int main(void) {
+    int premio[LINHAS][COLUNAS] =  {
+        {1,0,0,0,1},
+        {0,1,0,1,0},
+        {0,0,1,0,0},
+    };
+
+    int count_prize;
+    do {
+        count_prize = 0;
+        int** slot = cria_slot();
+
+        int comp = slot[0][0];
+        for (int i=0; i < LINHAS; i++) {
+            for (int j=0; j < COLUNAS; j++) {
+                if (comp == slot[i][j] && premio[i][j]) 
+                    count_prize++;
+            }
+        }
+
+        for (int i=0; i < LINHAS; i++)
+            free (slot[i]);
+        free(slot);
+    } while (count_prize != COUNT);
+
+    printf ("Ganhou!\n");
+    return 0;
 }
